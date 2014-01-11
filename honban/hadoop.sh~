@@ -1,0 +1,12 @@
+#!/bin/sh
+
+hadoop fs -rm -r output
+hadoop fs -put data ./data
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming-2.0.0-cdh4.4.0.jar \
+-input /user/'whoami'/data \
+-output /user/'whoami'output \
+-numReduceTasks 16 \
+-mapper "./mapper.rb" \
+-reducer "./reducer.rb" \
+-file mapper.rb \
+-file reducer.rb

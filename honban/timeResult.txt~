@@ -1,0 +1,10 @@
+time ~/.rubies/ruby-1.9.3-p448/bin/ruby mapper.rb | ~/.rubies/ruby-1.9.3-p448/bin/ruby reducer.rb >> result.txt
+
+real    0m16.962s
+user    0m0.284s
+sys     0m0.060s
+
+real	0m15.945s
+user	0m0.324s
+sys	0m0.036s
+

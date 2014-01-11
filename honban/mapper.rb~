@@ -1,0 +1,70 @@
+#!/usr/bin/ruby
+#encoding: utf-8
+
+require './getNoum'
+
+class Mapper
+
+  require 'csv'
+  require 'nokogiri'
+  require 'open-uri'
+  require 'open_uri_redirections'
+  require 'timeout'
+
+  TIME_OUT = 10
+
+  def initialize
+
+    @noumObj = GetNoum.new()
+
+  end
+
+  def mapperMain
+
+    # @countLimit = 0 # debug
+
+    @isFirst = true
+
+    CSV.foreach("moz_places.csv") do |row|
+
+      #debug
+      # if @countLimit > 30 then
+      #   break
+      # end
+      # @countLimit += 1
+
+      if !@isFirst then
+        # puts row[1] # debug
+        # puts @countLimit # debug
+
+        if !row[1].include?("http") then
+          next
+        end
+
+        begin
+          timeout(TIME_OUT){
+              @doc = Nokogiri::HTML(open(row[1],:allow_redirections=> :safe))
+            }
+          rescue TimeoutError => e
+            # timeoutの例外処理
+          rescue => e
+            # timeout以外のo例外処理
+        end
+
+        @doc.css("p").each do |elm|
+          @noumObj.getNoum(elm.content)
+        end
+
+      else
+        @isFirst = false
+      end
+    end
+
+  end
+
+end
+
+mapObj = Mapper.new
+mapObj.mapperMain
+
+
